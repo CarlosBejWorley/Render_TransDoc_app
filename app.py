@@ -40,6 +40,7 @@ def download(path):
     """Serve a file from the upload directory."""
     return send_from_directory(DOWNLOAD_DIRECTORY, path, as_attachment=True)
 
+#Creando elementos para agregar a la vista principal
 docInfo = alert
 
 upload =   dcc.Upload(
