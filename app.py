@@ -148,8 +148,15 @@ def update_output(click,uploaded_filenames, uploaded_file_contents,discipline,ed
         else:
             return [html.Li(file_download_link(filename)) for filename in files]
 
-
-
+@app.callback(
+    Output("doc_alert","children"),
+    Input("upload-data","contents"),
+    State("upload-data","filename")
+    
+)
+def update_alert(content,uploaded_filenames):
+    if uploaded_filenames is not None :
+        return "File: " + uploaded_filenames[0] + " processed succesfully!"
 # Testing server
 if __name__ == "__main__":
     app.run_server(debug=True, host='127.0.0.1')
