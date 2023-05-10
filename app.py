@@ -149,14 +149,23 @@ def update_output(click,uploaded_filenames, uploaded_file_contents,discipline,ed
             return [html.Li(file_download_link(filename)) for filename in files]
 
 @app.callback(
-    Output("doc_alert","children"),
+    [Output("doc_alert","children"),Output("doc_alert","is_open")],
     Input("upload-data","contents"),
-    State("upload-data","filename")
+    [State("upload-data","filename"),State("doc_alert","is_open")]
     
 )
-def update_alert(content,uploaded_filenames):
-    if uploaded_filenames is not None :
-        return "File: " + uploaded_filenames[0] + " processed succesfully!"
+def update_alert(content,uploaded_filenames,is_open):
+
+    if uploaded_filenames is not None and is_open != True :
+
+        return "File: " + uploaded_filenames[0] + " processed succesfully!", True
+    
+    elif uploaded_filenames is not None and is_open == True:
+
+        return "File: " + uploaded_filenames[0] + " processed succesfully!", True
+    
+    return ("Upload a document to translate ", False)
+
 # Testing server
 if __name__ == "__main__":
     app.run_server(debug=True, host='127.0.0.1')

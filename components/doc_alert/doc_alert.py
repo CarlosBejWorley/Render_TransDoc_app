@@ -4,7 +4,7 @@ from dash import html
 
 alert = html.Div(
     [
-         dbc.Alert("Upload a document to translate", color="primary", id="doc_alert",style={
+         dbc.Alert(" Upload a document to translate ", color="info", id="doc_alert", is_open=False,style={
              "textAlign": "center",
              "marginLeft": "auto",
              "marginRight": "auto",
