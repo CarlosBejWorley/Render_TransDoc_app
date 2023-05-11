@@ -22,6 +22,7 @@ from dash.dependencies import Input, Output, State
 UPLOAD_DIRECTORY = "uploaded_files/"
 DOWNLOAD_DIRECTORY = "download_files/"
 
+#Funciones para borrar el directorio de archivos al recargar la pagina
 delete_files = glob.glob(UPLOAD_DIRECTORY+'*.docx')
 for f in delete_files:
     os.remove(f)
@@ -116,9 +117,10 @@ app.layout = dbc.Container(
             dbc.Row(docInfo),
             dbc.Row(html.H5("2. Define extra content to be added:")),
             dbc.Row(form),
-            dbc.Row(html.H5("3. Download your translated document:")),
+            dbc.Row(html.H5("3. Translate your document:")),
             dbc.Row(button),
-            dbc.Row(html.Ul(id="file-list"))
+            dbc.Row(html.H5("4. Download your Document:")),
+            dbc.Row(html.H5(id="download_File", style={"textAlign": "center"}))
         ]            
         )      
         
@@ -127,27 +129,7 @@ app.layout = dbc.Container(
     fluid=True,
 )
 
-
-@app.callback(
-    Output("file-list", "children"),
-    [Input("translate-button", "n_clicks")],
-    [State("upload-data", "filename"),State("upload-data", "contents"),State("discipline-row", "value"),State("education-radios", "value"),State("experience-radios", "value")]
-    #,Input("upload-data", "filename"), Input("upload-data", "contents")
-)
-def update_output(click,uploaded_filenames, uploaded_file_contents,discipline,education,experience):
-    """Save uploaded files and regenerate the file list."""
-    if click is not None:
-
-        if uploaded_filenames is not None and uploaded_file_contents is not None:
-            for name, data in zip(uploaded_filenames, uploaded_file_contents):
-                save_file(name, data,discipline,education,experience)
-
-        files = uploaded_files()
-        if len(files) == 0:
-            return [html.Li("Load a file on first step to translate")]
-        else:
-            return [html.Li(file_download_link(filename)) for filename in files]
-
+""" Toggle uploaded doc info alert """
 @app.callback(
     [Output("doc_alert","children"),Output("doc_alert","is_open")],
     Input("upload-data","contents"),
@@ -165,6 +147,29 @@ def update_alert(content,uploaded_filenames,is_open):
         return "File: " + uploaded_filenames[0] + " processed succesfully!", True
     
     return ("Upload a document to translate ", False)
+
+
+"""Save uploaded file, transalate and regenerate the downloable file."""
+
+@app.callback(
+    Output("download_File", "children"),
+    [Input("translate-button", "n_clicks")],
+    [State("upload-data", "filename"),State("upload-data", "contents"),State("discipline-row", "value"),State("education-radios", "value"),State("experience-radios", "value")]
+    #,Input("upload-data", "filename"), Input("upload-data", "contents")
+)
+def update_output(click,uploaded_filenames, uploaded_file_contents,discipline,education,experience):
+    
+    if click is not None:
+
+        if uploaded_filenames is not None and uploaded_file_contents is not None:
+            for name, data in zip(uploaded_filenames, uploaded_file_contents):
+                save_file(name, data,discipline,education,experience)
+
+        files = uploaded_files()
+        if len(files) == 0:
+            return "Load a file on first step to translate"
+        else:
+            return [file_download_link(files[0])]
 
 # Testing server
 if __name__ == "__main__":
