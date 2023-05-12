@@ -34,7 +34,7 @@ for f in delete_downloads:
 # Dash instance declaration 
 server = Flask(__name__)
 app = dash.Dash(server=server, plugins=[dl.plugins.pages], external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
-
+server= app.server
 
 @server.route("/download/<path:path>")
 def download(path):
