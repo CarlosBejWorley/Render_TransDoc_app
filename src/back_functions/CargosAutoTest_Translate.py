@@ -1,7 +1,3 @@
-#%%
-#Paquetes
-#!pip install python-docx
-#!pip install google_trans_new
 from matplotlib.pyplot import text
 import pandas as pd
 import numpy as np
@@ -10,14 +6,14 @@ from docx import Document
 from deep_translator import GoogleTranslator
 
 
-# %%
-#plantilla = Document('HR-FRM-0001 FORMATO DESCRIPTIVO DE CARGO_Esp (Plantilla).docx')  #Tiene que hacer esto con cada nuevo documento
+# Cargando el documento que funcionara como plantilla
+plantilla = Document('Plantillas/Plantilla.docx')  #Tiene que hacer esto con cada nuevo documento
+
 #docinfo = Document('Cargos/5A - Senior Engineer.docx')
+
 #Iniciando variable para usar traductor de google
 translator = GoogleTranslator(source="english",target="es")
 
-
-#%%
 #Función para cambiar texto en el documento (fuera de tablas)
 def cambiaTexto(llaveOriginal,textoNuevo,doc):
     for paragraph in doc.paragraphs:
@@ -25,9 +21,9 @@ def cambiaTexto(llaveOriginal,textoNuevo,doc):
             #print(paragraph.text)
             paragraph.text = textoNuevo
 
-
 #Función para cambiar texto dentro de tablas
 def cambiaTextoTabla(llaveOriginal,textoNuevo,doc,disciplina,educacion,experiencia): 
+
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
@@ -51,26 +47,19 @@ def cambiaTextoTabla(llaveOriginal,textoNuevo,doc,disciplina,educacion,experienc
                         paragraph.text = paragraph.text.replace(paragraph.text,"X")                        
                     elif "&EXP." in paragraph.text:
                         paragraph.text = paragraph.text.replace(paragraph.text,"")
-                        
-                    
-
-
-
 
 #Función para traducir texto desde inglés a español
 def traducirTexto(textOriginal):
     spaText=translator.translate(textOriginal)
-    return spaText
+    return spaText    
 
-
-
+#Función para pasar el texto en los campos del documento original a la plantilla
 def procesar_doc(path,disciplina='Engineering',educacion='1',experiencia='3'):
 # path = "5C - Engineer I.docx"
 # langOrig = 'en'
 # langFinal = 'es'
     
     docinfo = Document(path)
-    plantilla = Document('C:/Users/carbe/Documents/Worley Projects/Translation/TransDoc/back_functions/HR-FRM-0001 FORMATO DESCRIPTIVO DE CARGO_Esp (Plantilla).docx')
     #docinfo = Document(path)
     #
     #Obtener información de la tabla del documento original
@@ -157,6 +146,4 @@ def procesar_doc(path,disciplina='Engineering',educacion='1',experiencia='3'):
     #Retornar archivo traducido
     return plantilla
     #plantilla.save('downloads_files/'+path)
-# 
-
-# %%
+                    
