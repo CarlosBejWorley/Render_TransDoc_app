@@ -7,7 +7,7 @@ from deep_translator import GoogleTranslator
 
 
 # Cargando el documento que funcionara como plantilla
-plantilla = Document('Plantillas/Plantilla.docx')  #Tiene que hacer esto con cada nuevo documento
+plantilla = Document('plantillas/Plantilla.docx')  #Tiene que hacer esto con cada nuevo documento
 
 #docinfo = Document('Cargos/5A - Senior Engineer.docx')
 
