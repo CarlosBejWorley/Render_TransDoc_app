@@ -168,7 +168,7 @@ def update_output(click,uploaded_filenames, uploaded_file_contents,discipline,ed
                 save_file(name, data,discipline,education,experience)
 
         files = uploaded_files()
-        if len(files) == 0:
+        if len(files) == 0 or len(files) == 1:
             return "Load a file on first step to translate"
         else:
             return [file_download_link(files[0])]
