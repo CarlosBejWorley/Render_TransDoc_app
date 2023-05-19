@@ -44,6 +44,8 @@ def download(path):
 #Creando elementos para agregar a la vista principal
 docInfo = alert
 
+format_link=  html.A("You can access the available job formats here", id="format_link", target="",href="https://worleyparsons.sharepoint.com/sites/People_grp/GOF/Global%20Job%20Profiles/Forms/AllItems.aspx?viewid=91cf3383%2D27de%2D4bb9%2D9930%2D69f44f6ec8aa")
+
 upload =   dcc.Upload(
             id="upload-data",
             children=html.Div(
@@ -105,14 +107,14 @@ def file_download_link(filename):
     location = "/download/{}".format(urlquote(filename))
     return html.A(filename, href=location)
 
-
 #Main layout
 app.layout = dbc.Container(
     [   navbar,
         dbc.Container([
-            dbc.Row(html.H3("WELCOME TO UNIVERSAL JOB DESCRIPTION TRANSBOT", className="text-center",)),
-            dbc.Row(html.H4("Follow these steps:"),),
-            dbc.Row(html.H5("1. Upload your document to be translated and exported to new format: "),),
+            dbc.Row(html.H3("Welcome to JDT Bot – Job Description Translator Bot", className="text-center",)),
+            dbc.Row(html.H4("Follow these steps:")),
+            dbc.Row(html.H5("1. Upload your document to be translated and exported to new format: ")),
+            dbc.Row(format_link, style={"textAlign": "center"}),
             dbc.Row(upload),
             dbc.Row(docInfo),
             dbc.Row(html.H5("2. Define extra content to be added:")),

@@ -2,7 +2,7 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, callback, html
 
 
-logo = "assets/worley_logo.png"
+logo = "assets/Logo_pds.png"
 
 
 
@@ -13,7 +13,7 @@ navbar = dbc.Navbar(
                 # Use row and col to control vertical alignment of logo / brand
                 dbc.Row(
                     [
-                        html.Img(src=logo, height="50px"),
+                        html.Img(src=logo, height="90px"),
                     ],
                     align="center",
                     className="g-0",
