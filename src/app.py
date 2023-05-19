@@ -44,7 +44,7 @@ def download(path):
 #Creando elementos para agregar a la vista principal
 docInfo = alert
 
-format_link=  html.A("You can access the available job formats here", id="format_link", target="",href="https://worleyparsons.sharepoint.com/sites/People_grp/GOF/Global%20Job%20Profiles/Forms/AllItems.aspx?viewid=91cf3383%2D27de%2D4bb9%2D9930%2D69f44f6ec8aa")
+format_link=  html.A("You can access the available job formats here", id="format_link", target="_blank",href="https://worleyparsons.sharepoint.com/sites/People_grp/GOF/Global%20Job%20Profiles/Forms/AllItems.aspx?viewid=91cf3383%2D27de%2D4bb9%2D9930%2D69f44f6ec8aa")
 
 upload =   dcc.Upload(
             id="upload-data",
