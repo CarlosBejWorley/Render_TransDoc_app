@@ -24,12 +24,20 @@ DOWNLOAD_DIRECTORY = "download_files/"
 
 #Funciones para borrar el directorio de archivos al recargar la pagina
 delete_files = glob.glob(UPLOAD_DIRECTORY+'*.docx')
+
 for f in delete_files:
     os.remove(f)
 
 delete_downloads = glob.glob(DOWNLOAD_DIRECTORY+'*.docx')
-for f in delete_downloads:
-    os.remove(f)
+delete_py = glob.glob(DOWNLOAD_DIRECTORY+'*.py')
+def borrar_downloads():
+    print("Borrando descargas")
+    for f in delete_downloads:
+        os.remove(f)
+    for f in delete_py:
+        os.remove(f)    
+
+borrar_downloads()
 
 # Dash instance declaration 
 server = Flask(__name__)
@@ -168,7 +176,7 @@ def update_output(click,uploaded_filenames, uploaded_file_contents,discipline,ed
                 save_file(name, data,discipline,education,experience)
 
         files = uploaded_files()
-        if len(files) == 0 or len(files) == 1:
+        if len(files) == 0 :
             return "Load a file on first step to translate"
         else:
             return [file_download_link(files[0])]
