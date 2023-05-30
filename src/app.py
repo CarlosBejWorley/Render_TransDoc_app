@@ -28,12 +28,13 @@ delete_files = glob.glob(UPLOAD_DIRECTORY+'*.docx')
 for f in delete_files:
     os.remove(f)
 
-delete_downloads = glob.glob(DOWNLOAD_DIRECTORY+'*.docx')
-delete_py = glob.glob(DOWNLOAD_DIRECTORY+'*.py')
 def borrar_downloads():
+    delete_downloads = glob.glob(DOWNLOAD_DIRECTORY+'*.docx')
+    delete_py = glob.glob(DOWNLOAD_DIRECTORY+'*.py')    
     print("Borrando descargas")
     for f in delete_downloads:
         os.remove(f)
+        print("Descarga borrada")
     for f in delete_py:
         os.remove(f)    
 
@@ -76,6 +77,15 @@ button = html.Div(
     [
         dbc.Button(
             "Translate Document", id="translate-button", className="d-grid gap-2 col-6 mx-auto", n_clicks=0
+        ),
+        
+    ]
+)
+
+reload_button = html.Div(
+    [
+        html.A(
+            "Translate another document", id="reload_button", className="d-grid gap-2 col-6 mx-auto", n_clicks=0, href="/"
         ),
         
     ]
@@ -130,7 +140,8 @@ app.layout = dbc.Container(
             dbc.Row(html.H5("3. Translate your document:")),
             dbc.Row(button),
             dbc.Row(html.H5("4. Download your Document:")),
-            dbc.Row(html.H5(id="download_File", style={"textAlign": "center"}))
+            dbc.Row(html.H5(id="download_File", style={"textAlign": "center"})),
+            dbc.Row(dbc.Collapse(html.H5(reload_button),id="reload_collapse",is_open=False), className="text-center")
         ]            
         )      
         
@@ -173,13 +184,35 @@ def update_output(click,uploaded_filenames, uploaded_file_contents,discipline,ed
 
         if uploaded_filenames is not None and uploaded_file_contents is not None:
             for name, data in zip(uploaded_filenames, uploaded_file_contents):
-                save_file(name, data,discipline,education,experience)
+                save_file(name, data, discipline, education, experience)
 
         files = uploaded_files()
         if len(files) == 0 :
             return "Load a file on first step to translate"
         else:
             return [file_download_link(files[0])]
+            
+
+@app.callback(
+    Output("reload_collapse","is_open"),
+    Input("download_File","children")
+)
+def update_reload(content):
+    if content == "Load a file on first step to translate":
+        return False
+    else:
+        return True
+
+@app.callback(
+    Output("reload_button", "children"),
+    Input("reload_button","n_clicks")
+)
+def reset_upload(click):
+    if click is not None:
+        borrar_downloads()
+        return "Translate another document"
+
+
 
 # Testing server
 if __name__ == "__main__":
