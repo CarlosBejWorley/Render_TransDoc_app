@@ -4,6 +4,16 @@ import numpy as np
 from docx import Document
 from deep_translator import GoogleTranslator
 
+'''
+El funcionamiento del algoritmo de traducción es el siguiente:
+    1. Se carga la plantilla que funcionara como borrador del documento traducido en el nuevo formato
+    2. Buscar los textos en el docuemnto original (Esten dentro o fuera de una tabla)
+    3. Traducir los textos pertinentes a español
+    4. Buscar la posición dentro del borrador donde debe estar el texto
+    5. Colocar cada texto traducido en el borrador, colocar las selecciones de los campos de disicplina , educación y experiencia seleccionadas por el usuario
+    6. Se retorna el documento en el nuevo formato con el nombre del archivo original
+'''
+
 
 # Cargando el documento que funcionara como plantilla
 plantilla = Document('plantillas/Plantilla.docx')  #Tiene que hacer esto con cada nuevo documento
@@ -11,14 +21,14 @@ plantilla = Document('plantillas/Plantilla.docx')  #Tiene que hacer esto con cad
 #Iniciando variable para usar traductor de google
 translator = GoogleTranslator(source="english",target="es")
 
-#Función para cambiar texto en el documento (fuera de tablas)
+#Función para cambiar texto por fuera de las tablas del documento original al nuevo formato 
 def cambiaTexto(llaveOriginal,textoNuevo,doc):
     for paragraph in doc.paragraphs:
         if llaveOriginal in paragraph.text:
             #print(paragraph.text)
             paragraph.text = textoNuevo
 
-#Función para cambiar texto dentro de tablas
+#Función para cambiar texto de las tablas del documento original al nuevo formato 
 def cambiaTextoTabla(llaveOriginal,textoNuevo,doc,disciplina,educacion,experiencia): 
 
     for table in doc.tables:
@@ -136,4 +146,4 @@ def procesar_doc(path,disciplina='Engineering',educacion='1',experiencia='3'):
     #Retornar archivo traducido
     return plantilla
     #plantilla.save('downloads_files/'+path)
-                    
+                     

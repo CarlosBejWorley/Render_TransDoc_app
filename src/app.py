@@ -96,7 +96,7 @@ def translate_file(file_path,discipline,education,experience):
         translated_file=procesar_doc(file_path,discipline,education,experience)
         name=file_path.split('/')
         print(name)
-        translated_file.save(DOWNLOAD_DIRECTORY+'translated-'+name[1])
+        translated_file.save(DOWNLOAD_DIRECTORY+'Translated-'+name[1])
 
 def save_file(name, content,discipline,education,experience):
 
