@@ -1,4 +1,4 @@
-#libraries
+#Importando librerias
 import dash
 import dash_labs as dl
 import dash_bootstrap_components as dbc
@@ -18,7 +18,7 @@ from flask import Flask, send_from_directory
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 
-#establishing upload and download files
+#Declarando donde se van a alojar los documentos cargados y descargados
 UPLOAD_DIRECTORY = "uploaded_files/"
 DOWNLOAD_DIRECTORY = "download_files/"
 
@@ -40,7 +40,7 @@ def borrar_downloads():
 
 borrar_downloads()
 
-# Dash instance declaration 
+# Declarando la instancia de dash 
 server = Flask(__name__)
 app = dash.Dash(server=server, plugins=[dl.plugins.pages], external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
 server= app.server
@@ -125,7 +125,7 @@ def file_download_link(filename):
     location = "/download/{}".format(urlquote(filename))
     return html.A(filename, href=location)
 
-#Main layout
+#Vista Principal
 app.layout = dbc.Container(
     [   navbar,
         dbc.Container([
@@ -150,7 +150,7 @@ app.layout = dbc.Container(
     fluid=True,
 )
 
-""" Toggle uploaded doc info alert """
+""" Desplegar alerta al subir un documento """
 @app.callback(
     [Output("doc_alert","children"),Output("doc_alert","is_open")],
     Input("upload-data","contents"),
@@ -170,7 +170,7 @@ def update_alert(content,uploaded_filenames,is_open):
     return ("Upload a document to translate ", False)
 
 
-"""Save uploaded file, transalate and regenerate the downloable file."""
+"""Guardar el docuemnto subido, traducirlo y generar un nuevo docuemnto descargable"""
 
 @app.callback(
     Output("download_File", "children"),
@@ -192,7 +192,7 @@ def update_output(click,uploaded_filenames, uploaded_file_contents,discipline,ed
         else:
             return [file_download_link(files[0])]
             
-
+"""Desplegar opción de nuevo documento"""
 @app.callback(
     Output("reload_collapse","is_open"),
     Input("download_File","children")
@@ -203,6 +203,7 @@ def update_reload(content):
     else:
         return True
 
+"""Opción para traducir un nuevo documento"""
 @app.callback(
     Output("reload_button", "children"),
     Input("reload_button","n_clicks")
@@ -211,9 +212,8 @@ def reset_upload(click):
     if click is not None:
         borrar_downloads()
         return "Translate another document"
+    
 
-
-
-# Testing server
+# Declarando el servidor
 if __name__ == "__main__":
     app.run_server(debug=True, host='127.0.0.1')

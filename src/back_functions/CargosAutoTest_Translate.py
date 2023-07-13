@@ -2,14 +2,11 @@ from matplotlib.pyplot import text
 import pandas as pd
 import numpy as np
 from docx import Document
-#from google_trans_new import google_translator  
 from deep_translator import GoogleTranslator
 
 
 # Cargando el documento que funcionara como plantilla
 plantilla = Document('plantillas/Plantilla.docx')  #Tiene que hacer esto con cada nuevo documento
-
-#docinfo = Document('Cargos/5A - Senior Engineer.docx')
 
 #Iniciando variable para usar traductor de google
 translator = GoogleTranslator(source="english",target="es")
@@ -43,25 +40,20 @@ def cambiaTextoTabla(llaveOriginal,textoNuevo,doc,disciplina,educacion,experienc
                         paragraph.text = paragraph.text.replace(paragraph.text,"")
                         
                     if "&EXP.{}&".format(experiencia) in paragraph.text:
-                        print("adentro")
                         paragraph.text = paragraph.text.replace(paragraph.text,"X")                        
                     elif "&EXP." in paragraph.text:
                         paragraph.text = paragraph.text.replace(paragraph.text,"")
 
-#Función para traducir texto desde inglés a español
+#Función para traducir texto desde el idioma origen a español
 def traducirTexto(textOriginal):
     spaText=translator.translate(textOriginal)
     return spaText    
 
 #Función para pasar el texto en los campos del documento original a la plantilla
 def procesar_doc(path,disciplina='Engineering',educacion='1',experiencia='3'):
-# path = "5C - Engineer I.docx"
-# langOrig = 'en'
-# langFinal = 'es'
     
     docinfo = Document(path)
-    #docinfo = Document(path)
-    #
+
     #Obtener información de la tabla del documento original
     info = [''] #Se guardan en esta lista
 
@@ -134,15 +126,13 @@ def procesar_doc(path,disciplina='Engineering',educacion='1',experiencia='3'):
     #campos['Texto'] = campos['Texto'].str.capitalize()
     campos
 
-    #
+
     #Cargar texto a la plantilla (cargado en Python), reemplazando los tags
     for tag in campos['TagNuevo']:
         if tag != '':
             cambiaTextoTabla(tag,campos.loc[campos['TagNuevo']==tag,'Texto'].iloc[0],plantilla,disciplina,educacion,experiencia)
 
-    #cambiarEducacion(plantilla,educacion,experiencia,disciplina)
 
-    # 
     #Retornar archivo traducido
     return plantilla
     #plantilla.save('downloads_files/'+path)

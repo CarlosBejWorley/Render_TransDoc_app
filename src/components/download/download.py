@@ -1,5 +1,7 @@
 from dash import Dash, dcc, html, Input, Output, callback
 
+
+#Definiendo el boton para generar el archivo traducido
 download= html.Div([
     html.Button("Download Text", id="btn-download-txt"),
     dcc.Download(id="download-text")
