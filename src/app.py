@@ -5,6 +5,9 @@ import dash_bootstrap_components as dbc
 from components.navbar.navbar import navbar
 from components.form.form import form
 from components.doc_alert.doc_alert import alert
+import pathlib
+from werkzeug.utils import secure_filename
+from pdfminer.high_level import extract_text
 
 import base64
 import os
@@ -24,8 +27,12 @@ DOWNLOAD_DIRECTORY = "download_files/"
 
 #Funciones para borrar el directorio de archivos al recargar la pagina
 delete_files = glob.glob(UPLOAD_DIRECTORY+'*.docx')
+delete_files_pdf = glob.glob(UPLOAD_DIRECTORY+'*.pdf')
 
 for f in delete_files:
+    os.remove(f)
+
+for f in delete_files_pdf:
     os.remove(f)
 
 def borrar_downloads():
@@ -98,18 +105,50 @@ def translate_file(file_path,discipline,education,experience):
         print(name)
         translated_file.save(DOWNLOAD_DIRECTORY+'Translated-'+name[1])
 
-def save_file(name, content,discipline,education,experience):
+def translate_text_file(file_path, discipline, education, experience):
+    translated_file = procesar_doc(file_path, discipline, education, experience)
+    name = os.path.basename(file_path)
+    translated_file.save(os.path.join(DOWNLOAD_DIRECTORY, 'Translated-' + name))
 
-    #print(content)
-    """Decode and store a file uploaded with Plotly Dash."""
+def process_pdf_file(name, content):
+    if not allowed_file(name):
+        print("Invalid file type. Allowed file types are: ", ', '.join(ALLOWED_EXTENSIONS))
+        return
+
+    complete_path = os.path.join(UPLOAD_DIRECTORY, name)
+    with open(complete_path, "wb") as fp:
+        fp.write(content)
+
+    # Procesar el archivo PDF y guardar el contenido en un archivo .txt
+    txt_filename = name.rsplit('.', 1)[0] + ".txt"
+    with open(os.path.join(UPLOAD_DIRECTORY, txt_filename), "w", encoding="utf-8") as txt_fp:
+        text = extract_text(complete_path)
+        txt_fp.write(text)
+
+    return txt_filename
+
+
+
+ALLOWED_EXTENSIONS = {'docx', 'pdf'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def save_file(name, content, discipline, education, experience):
+    if not allowed_file(name):
+        print("Invalid file type. Allowed file types are: ", ', '.join(ALLOWED_EXTENSIONS))
+        return
+
     data = content.encode("utf8").split(b";base64,")[1]
-    #print(data)
-    complete_path=os.path.join(UPLOAD_DIRECTORY, name)
-    with open(complete_path, "wb") as fp:        
+    complete_path = os.path.join(UPLOAD_DIRECTORY, name)
+    with open(complete_path, "wb") as fp:
         fp.write(base64.decodebytes(data))
-    fp.close()
 
-    translate_file(complete_path,discipline,education,experience)
+    if name.lower().endswith(".pdf"):
+        txt_filename = process_pdf_file(name, base64.decodebytes(data))
+        translate_text_file(os.path.join(UPLOAD_DIRECTORY, txt_filename), discipline, education, experience)
+    elif name.lower().endswith(".docx"):
+        translate_file(complete_path, discipline, education, experience)
 
 def uploaded_files():
     """List the files in the download directory."""
@@ -125,6 +164,20 @@ def file_download_link(filename):
     location = "/download/{}".format(urlquote(filename))
     return html.A(filename, href=location)
 
+def allowed_file_error_message():
+    return html.Div(
+        "Invalid file type. Allowed file types are: " + ", ".join(ALLOWED_EXTENSIONS),
+        style={
+                "color": "#A83B42",
+                "background-color" : "#ea868f",
+                "border-radius" : ".25rem",
+                "padding" : "1rem 1rem",
+                "border" : "solid 1px transparent",
+                "border-color" : "#F35C75"
+            },
+        className="text-center"
+    )   
+
 #Vista Principal
 app.layout = dbc.Container(
     [   navbar,
@@ -134,6 +187,7 @@ app.layout = dbc.Container(
             dbc.Row(html.H5("1. Upload your document to be translated and exported to new format: ")),
             dbc.Row(format_link, style={"textAlign": "center"}),
             dbc.Row(upload),
+            dbc.Row(allowed_file_error_message(), id="allowed-file-message"),
             dbc.Row(docInfo),
             dbc.Row(html.H5("2. Define extra content to be added:")),
             dbc.Row(form),
@@ -152,25 +206,29 @@ app.layout = dbc.Container(
 
 """ Desplegar alerta al subir un documento """
 @app.callback(
-    [Output("doc_alert","children"),Output("doc_alert","is_open")],
-    Input("upload-data","contents"),
-    [State("upload-data","filename"),State("doc_alert","is_open")]
-    
+    [Output("doc_alert", "children"), Output("doc_alert", "is_open"), Output("allowed-file-message", "children")],
+    [Input("upload-data", "contents")],
+    [State("upload-data", "filename"), State("doc_alert", "is_open")]
 )
-def update_alert(content,uploaded_filenames,is_open):
+def update_alert(contents, uploaded_filenames, is_open):
+    if not contents:
+        return "Upload a document to translate", False, None
 
-    if uploaded_filenames is not None and is_open != True :
+    name = uploaded_filenames[0] if uploaded_filenames else None
+    content = contents[0] if contents else None
 
-        return "File: " + uploaded_filenames[0] + " processed succesfully!", True
-    
-    elif uploaded_filenames is not None and is_open == True:
+    if not allowed_file(name):
+        return "Upload a document to translate", False, allowed_file_error_message()
 
-        return "File: " + uploaded_filenames[0] + " processed succesfully!", True
-    
-    return ("Upload a document to translate ", False)
+    if name and is_open is not True:
+        return "File: " + name + " processed successfully!", True, None
+
+    return "Upload a document to translate", False, None
 
 
-"""Guardar el docuemnto subido, traducirlo y generar un nuevo docuemnto descargable"""
+
+
+"""Guardar el documento subido, traducirlo y generar un nuevo documento descargable"""
 
 @app.callback(
     Output("download_File", "children"),
