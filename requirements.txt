@@ -6,8 +6,9 @@ docx==0.2.4
 Flask==2.1.2
 google_trans_new==1.1.9
 matplotlib==3.3.4
-numpy==1.21.0
+numpy
 pandas==1.4.2
-python_docx==0.8.11
+python_docx
 gunicorn
 dash-tools
+pdfminer
