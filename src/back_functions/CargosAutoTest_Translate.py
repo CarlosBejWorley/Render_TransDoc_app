@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from docx import Document
 from deep_translator import GoogleTranslator
+from pdfminer.high_level import extract_text
 
 '''
 El funcionamiento del algoritmo de traducción es el siguiente:
