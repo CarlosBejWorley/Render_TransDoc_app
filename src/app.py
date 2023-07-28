@@ -6,8 +6,8 @@ from components.navbar.navbar import navbar
 from components.form.form import form
 from components.doc_alert.doc_alert import alert
 import pathlib
-from werkzeug.utils import secure_filename
-from pdfminer.high_level import extract_text
+import pdfplumber
+import cloudconvert 
 
 import base64
 import os
@@ -15,9 +15,10 @@ from urllib.parse import quote as urlquote
 import glob
 from docx import Document
 from back_functions.CargosAutoTest_Translate import procesar_doc
+from urllib.parse import quote as urlquote
 
 
-from flask import Flask, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 
@@ -50,7 +51,7 @@ borrar_downloads()
 # Declarando la instancia de dash 
 server = Flask(__name__)
 app = dash.Dash(server=server, plugins=[dl.plugins.pages], external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
-server= app.server
+server = app.server
 
 @server.route("/download/<path:path>")
 def download(path):
@@ -105,57 +106,100 @@ def translate_file(file_path,discipline,education,experience):
         print(name)
         translated_file.save(DOWNLOAD_DIRECTORY+'Translated-'+name[1])
 
-def translate_text_file(file_path, discipline, education, experience):
-    if not allowed_file(file_path):
-        print("Invalid file type. Allowed file types are: ", ', '.join(ALLOWED_EXTENSIONS))
-        return
-
-    if file_path.lower().endswith(".txt"):
-        translated_file = procesar_text_file(file_path, discipline, education, experience)
-        name = os.path.basename(file_path)
-        translated_file.save(os.path.join(DOWNLOAD_DIRECTORY, 'Translated-' + name.rsplit('.', 1)[0] + '.docx'))
-    else:
-        translate_file(file_path, discipline, education, experience)
-
-def process_pdf_file(name, content):
-    if not allowed_file(name):
-        print("Invalid file type. Allowed file types are: ", ', '.join(ALLOWED_EXTENSIONS))
-        return
-
-    complete_path = os.path.join(UPLOAD_DIRECTORY, name)
-    with open(complete_path, "wb") as fp:
-        fp.write(content)
-
-    # Procesar el archivo PDF y guardar el contenido en un archivo .txt
-    txt_filename = name.rsplit('.', 1)[0] + ".txt"
-    with open(os.path.join(UPLOAD_DIRECTORY, txt_filename), "w", encoding="utf-8") as txt_fp:
-        text = extract_text(complete_path)
-        txt_fp.write(text)
-
-    return txt_filename
-
-
-
 ALLOWED_EXTENSIONS = {'docx', 'pdf', 'txt'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def save_file(name, content, discipline, education, experience):
-    if not allowed_file(name):
-        print("Invalid file type. Allowed file types are: ", ', '.join(ALLOWED_EXTENSIONS))
-        return
-
     data = content.encode("utf8").split(b";base64,")[1]
     complete_path = os.path.join(UPLOAD_DIRECTORY, name)
     with open(complete_path, "wb") as fp:
         fp.write(base64.decodebytes(data))
-
-    if name.lower().endswith(".pdf"):
-        txt_filename = process_pdf_file(name, base64.decodebytes(data))
-        translate_text_file(os.path.join(UPLOAD_DIRECTORY, txt_filename), discipline, education, experience)
-    elif name.lower().endswith(".docx"):
+    if complete_path.lower().endswith(".pdf"):
+        docx_filename = complete_path.rsplit(".", 1)[0] + ".docx"
+        pdf_to_word(complete_path, docx_filename)  # Realiza la conversión de PDF a Word con CloudConvert
+        translate_file(docx_filename, discipline, education, experience)
+        # os.remove(docx_filename)  # Si deseas eliminar el archivo temporal de Word después de la traducción
+    else:
         translate_file(complete_path, discipline, education, experience)
+
+
+"""Funcion de conversion de pdf a word por medio de pdfPlumber"""
+# def pdf_to_word(input_pdf_path, output_word_path):
+#     doc = Document()
+
+#     with pdfplumber.open(input_pdf_path) as pdf:
+#         # Recorre las páginas del PDF
+#         for page in pdf.pages:
+#             # Extrae el texto de la página y agrega un párrafo al documento de Word
+#             text = page.extract_text()
+#             doc.add_paragraph(text)
+
+#             # Extrae las tablas de la página y agrega filas y celdas al documento de Word
+#             for table in page.extract_tables():
+#                 # Creamos una tabla en el documento
+#                 doc_table = doc.add_table(rows=len(table), cols=len(table[0]))
+
+#                 # Agregamos filas y celdas a la tabla
+#                 for i, row in enumerate(table):
+#                     for j, cell in enumerate(row):
+#                         # Verificamos si la celda es nula y la reemplazamos con una cadena vacía
+#                         cell_text = cell.strip() if cell else ""
+#                         doc_table.cell(i, j).text = cell_text
+
+#     doc.save(output_word_path)
+
+"""Implementacion Cloud Convert"""
+
+API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZjY3NjE3MWM1Y2QwMDg3NTRiZWZmY2I0NzBmNTJiYjdkOGUxZDBhZDgwYTBhOWZmYmJmMDUwMzBhNTRkNzlhMjRiZmRjODM5ZWU3MmFiODQiLCJpYXQiOjE2OTA1NTc4NDQuNjk2OTAxLCJuYmYiOjE2OTA1NTc4NDQuNjk2OTAyLCJleHAiOjQ4NDYyMzE0NDQuNjg1Mzc5LCJzdWIiOiI2NDU1MzgxNyIsInNjb3BlcyI6WyJ1c2VyLnJlYWQiLCJ1c2VyLndyaXRlIiwidGFzay5yZWFkIiwidGFzay53cml0ZSIsIndlYmhvb2sucmVhZCIsIndlYmhvb2sud3JpdGUiLCJwcmVzZXQucmVhZCIsInByZXNldC53cml0ZSJdfQ.U0U3scUb8z7lbAY8YNHX13NH0pWGqb8K5t31mW7AHvX-RjVg9ITEl6F-fOtj9yEEqFpOtdKpTPxsc6UhR3SDilOQrIJDZF9kW_jORbOTM7emCR-yB4I9vkpRNj7CJdooY5TRUrCI_OH3g6R2TQAcWM8H5Td16NCSVxqnn0GWlZQPCyor6HEzP3TwYoTjjhpGb-yV-FpiPuvlplvg6iVy98KdN_4NI5DllCenUQx7OKKR_W9iRNMbKgV8BMCRKSiZ9-VQgFq3AiggqzUe_xgH6cnGJW0VSzyE0x7pbTf35c-yiktIpHmLOrxVTcqU7WYyaaxJm3E4pNGGrHaWFlvfm3GsRjMLNmvUBb8aAx1Pu2nMoZ5uE5imqBIcC19-O_Il6nw2tJ3Or4E11OEK7GAvQNecppZVjrhcrjfNRLj0A8YErwbUdczPhBucsFOPi0Yg-uNh7e2xZBDpCEVPwR9yybJOP5qMgRMyw4soE8Qu6JoPTeClstt85CflIe89nwktR7sOcbBQBhKeQG3FNJ7YGAB3wL19Med7t6bKasoggimSJQAHf7vu7rnSGG49a5qaXgW20lehdBNhk8OLK-EftJKOyI6PSGHl7q8Agpw6OfjRk-ais3A6xYMb3yOPRR1GQjtu1l35iB-BGgzyR09qnIUNatqyE6S5YlFiT6JXfLE"
+
+
+def pdf_to_word(input_pdf_path, output_word_path):
+    cloudconvert.configure(api_key=API_KEY)
+
+    task_payload = {
+        "tasks": {
+            'import-my-file': {
+                'operation': 'import/upload',
+            },
+            'convert-my-file': {
+                'operation': 'convert',
+                'input': 'import-my-file',
+                'output_format': 'docx',
+            },
+            'export-my-file': {
+                'operation': 'export/download',
+                'input': 'convert-my-file'
+            }
+        }
+    }
+
+    # Importa el archivo PDF
+    import_task = cloudconvert.Job.create(payload=task_payload)
+    import_url = import_task['tasks']['import-my-file']['result']['url']
+    with open(input_pdf_path, "rb") as pdf_file:
+        response = cloudconvert.Job.upload(url=import_url, data=pdf_file)
+
+    # Realiza la conversión a Word
+    task_payload['tasks']['convert-my-file']['input'] = import_task['tasks']['import-my-file']['result']['id']
+    convert_task = cloudconvert.Job.create(payload=task_payload)
+
+    # Espera a que la tarea de conversión termine
+    while True:
+        status = cloudconvert.Job.wait(id=convert_task['id'])
+        if status['status'] in ('completed', 'error'):
+            break
+
+    # Descarga el archivo Word convertido
+    export_url = convert_task['tasks']['convert-my-file']['result']['url']
+    response = cloudconvert.Job.download(url=export_url)
+
+    with open(output_word_path, 'wb') as output_file:
+        output_file.write(response.content)
+
+    print("PDF converted to Word successfully!")
+
 
 def uploaded_files():
     """List the files in the download directory."""

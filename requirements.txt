@@ -12,3 +12,6 @@ python_docx
 gunicorn
 dash-tools
 pdfminer.six == 20201018
+cloudconvert 
+Python-Docx
+pdfplumber
