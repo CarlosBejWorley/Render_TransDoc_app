@@ -106,9 +106,16 @@ def translate_file(file_path,discipline,education,experience):
         translated_file.save(DOWNLOAD_DIRECTORY+'Translated-'+name[1])
 
 def translate_text_file(file_path, discipline, education, experience):
-    translated_file = procesar_doc(file_path, discipline, education, experience)
-    name = os.path.basename(file_path)
-    translated_file.save(os.path.join(DOWNLOAD_DIRECTORY, 'Translated-' + name))
+    if not allowed_file(file_path):
+        print("Invalid file type. Allowed file types are: ", ', '.join(ALLOWED_EXTENSIONS))
+        return
+
+    if file_path.lower().endswith(".txt"):
+        translated_file = procesar_text_file(file_path, discipline, education, experience)
+        name = os.path.basename(file_path)
+        translated_file.save(os.path.join(DOWNLOAD_DIRECTORY, 'Translated-' + name.rsplit('.', 1)[0] + '.docx'))
+    else:
+        translate_file(file_path, discipline, education, experience)
 
 def process_pdf_file(name, content):
     if not allowed_file(name):
@@ -129,7 +136,7 @@ def process_pdf_file(name, content):
 
 
 
-ALLOWED_EXTENSIONS = {'docx', 'pdf'}
+ALLOWED_EXTENSIONS = {'docx', 'pdf', 'txt'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
