@@ -11,4 +11,4 @@ pandas==1.4.2
 python_docx
 gunicorn
 dash-tools
-pdfminer
+pdfminer.six == 20201018
