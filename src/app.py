@@ -152,53 +152,51 @@ def save_file(name, content, discipline, education, experience):
 
 """Implementacion Cloud Convert"""
 
-API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZjY3NjE3MWM1Y2QwMDg3NTRiZWZmY2I0NzBmNTJiYjdkOGUxZDBhZDgwYTBhOWZmYmJmMDUwMzBhNTRkNzlhMjRiZmRjODM5ZWU3MmFiODQiLCJpYXQiOjE2OTA1NTc4NDQuNjk2OTAxLCJuYmYiOjE2OTA1NTc4NDQuNjk2OTAyLCJleHAiOjQ4NDYyMzE0NDQuNjg1Mzc5LCJzdWIiOiI2NDU1MzgxNyIsInNjb3BlcyI6WyJ1c2VyLnJlYWQiLCJ1c2VyLndyaXRlIiwidGFzay5yZWFkIiwidGFzay53cml0ZSIsIndlYmhvb2sucmVhZCIsIndlYmhvb2sud3JpdGUiLCJwcmVzZXQucmVhZCIsInByZXNldC53cml0ZSJdfQ.U0U3scUb8z7lbAY8YNHX13NH0pWGqb8K5t31mW7AHvX-RjVg9ITEl6F-fOtj9yEEqFpOtdKpTPxsc6UhR3SDilOQrIJDZF9kW_jORbOTM7emCR-yB4I9vkpRNj7CJdooY5TRUrCI_OH3g6R2TQAcWM8H5Td16NCSVxqnn0GWlZQPCyor6HEzP3TwYoTjjhpGb-yV-FpiPuvlplvg6iVy98KdN_4NI5DllCenUQx7OKKR_W9iRNMbKgV8BMCRKSiZ9-VQgFq3AiggqzUe_xgH6cnGJW0VSzyE0x7pbTf35c-yiktIpHmLOrxVTcqU7WYyaaxJm3E4pNGGrHaWFlvfm3GsRjMLNmvUBb8aAx1Pu2nMoZ5uE5imqBIcC19-O_Il6nw2tJ3Or4E11OEK7GAvQNecppZVjrhcrjfNRLj0A8YErwbUdczPhBucsFOPi0Yg-uNh7e2xZBDpCEVPwR9yybJOP5qMgRMyw4soE8Qu6JoPTeClstt85CflIe89nwktR7sOcbBQBhKeQG3FNJ7YGAB3wL19Med7t6bKasoggimSJQAHf7vu7rnSGG49a5qaXgW20lehdBNhk8OLK-EftJKOyI6PSGHl7q8Agpw6OfjRk-ais3A6xYMb3yOPRR1GQjtu1l35iB-BGgzyR09qnIUNatqyE6S5YlFiT6JXfLE"
-
+API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzNiOTZkYzg5OTE2ZjhhZDM3MTJhMmUxOGEzYzhlMzgxYjBiZGIxNjM5MGJkYTc5OWE3MjIzMGVkYzYwNGY0ZTgzN2I1YTRkNWM3YmYyMTkiLCJpYXQiOjE2OTA4MzQ1NDYuMjAxODA4LCJuYmYiOjE2OTA4MzQ1NDYuMjAxODEsImV4cCI6NDg0NjUwODE0Ni4xOTQwMzcsInN1YiI6IjY0NTUzODE3Iiwic2NvcGVzIjpbIndlYmhvb2sud3JpdGUiLCJ3ZWJob29rLnJlYWQiLCJ0YXNrLndyaXRlIiwidGFzay5yZWFkIiwidXNlci53cml0ZSIsInVzZXIucmVhZCIsInByZXNldC5yZWFkIiwicHJlc2V0LndyaXRlIl19.MN_kyRQn21KIbZ0W0DGqB6J_m1Rri2P5oD-uZeaXue-TGLNbByYBiik9yissmZwv_fuw1NuA68TtMZqZM-dbwVz5pdLrmDkTK5iX50kijt3C5Y2QAj5GH6MlDGkqJAaZ0bCNO_8sEATBwHbQDuhVAL01f1EC3ei6_wq_EgxF8CLlQxbtY5WhwLUjJLF50YKVW6BaakPT2jbd7RVLpX1CTT2mftLtK7KUn5chgJySjDygNCn9QKsCBmpHVZg5jK7gZRCYElHg6O3Ad_OM7Aq_vPkw4JS3aqqY4wvw427jaXd13dWW4FonwZZhZgACdCLewQPNbWtUgNnYdd9KvFFnnPPCX_f9q1VP80IRpqrk8bWihczv9aBFZFxwt8lRHV9zVubKR5xKUCieC63e8KD5ivsiym9UIYSzJGrCltMwYN9A80FJU2fi2Jt66amhOG_0F5L43L91lh_xoRp8aDYDZ7tTDIUEuc--zg531TuKCD3tZKNJ0YWq4HsSMqUt_Nu9NrQPyYaL951RPEQ7e5pRc8ziKQwKyI6k2iFnlm7bpXwUfZ4fpdfH17gTa-fFzpXyKDPoQDrJgB1sk2gMkSbis7cgFmav2NyZKuEkGyGvKrD5ejChn4qbdrlmOKq-_wcRfClBUSTt-ZX6ULjLeNyrxDIbjKb_9TC9lY62zhSVEiI"
+cloudconvert.configure(api_key=API_KEY)
 
 def pdf_to_word(input_pdf_path, output_word_path):
-    cloudconvert.configure(api_key=API_KEY)
-
-    task_payload = {
+    # Crea el trabajo para importar el archivo PDF y convertirlo a Word
+    job = cloudconvert.Job.create(payload={
         "tasks": {
-            'import-my-file': {
-                'operation': 'import/upload',
+            "import-my-file": {
+                "operation": "import/upload"
             },
-            'convert-my-file': {
-                'operation': 'convert',
-                'input': 'import-my-file',
-                'output_format': 'docx',
+            "convert-my-file": {
+                "operation": "convert",
+                "input": "import-my-file",
+                "output_format": "docx"  # Especifica el formato de salida como docx para Word
             },
-            'export-my-file': {
-                'operation': 'export/download',
-                'input': 'convert-my-file'
+            "export-my-file": {
+                "operation": "export/url",
+                "input": "convert-my-file"
             }
         }
-    }
+    })
 
-    # Importa el archivo PDF
-    import_task = cloudconvert.Job.create(payload=task_payload)
-    import_url = import_task['tasks']['import-my-file']['result']['url']
-    with open(input_pdf_path, "rb") as pdf_file:
-        response = cloudconvert.Job.upload(url=import_url, data=pdf_file)
+    # Crea una nueva tarea de importación para cargar el archivo PDF
+    import_task = cloudconvert.Task.upload(file_name=input_pdf_path, task=job['tasks'][0])
 
-    # Realiza la conversión a Word
-    task_payload['tasks']['convert-my-file']['input'] = import_task['tasks']['import-my-file']['result']['id']
-    convert_task = cloudconvert.Job.create(payload=task_payload)
+    # Espera a que se complete el trabajo completo (importación y conversión)
+    job = cloudconvert.Job.wait(id=job['id'])
 
-    # Espera a que la tarea de conversión termine
-    while True:
-        status = cloudconvert.Job.wait(id=convert_task['id'])
-        if status['status'] in ('completed', 'error'):
-            break
+    # Verifica si el trabajo fue exitoso
+    if job['status'] == 'finished':
+        # Obtiene la URL de descarga del archivo Word convertido
+        export_task_id = job['tasks']['export-my-file']['id']
+        export_task = cloudconvert.Task.find(id=export_task_id)
+        export_url = export_task['result']['files'][0]['url']
 
-    # Descarga el archivo Word convertido
-    export_url = convert_task['tasks']['convert-my-file']['result']['url']
-    response = cloudconvert.Job.download(url=export_url)
+        # Descarga el archivo Word convertido
+        response = cloudconvert.download(filename=output_word_path, url=export_url)
 
-    with open(output_word_path, 'wb') as output_file:
-        output_file.write(response.content)
+        with open(output_word_path, 'wb') as output_file:
+            output_file.write(response.content)
 
-    print("PDF converted to Word successfully!")
+        print("PDF converted to Word successfully!")
+    else:
+        print("Conversion failed. Please check the CloudConvert dashboard for details.")
+
 
 
 def uploaded_files():
