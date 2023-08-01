@@ -6,7 +6,7 @@ from components.navbar.navbar import navbar
 from components.form.form import form
 from components.doc_alert.doc_alert import alert
 import pathlib
-import pdfplumber
+#import pdfplumber
 import cloudconvert 
 
 import base64
@@ -183,7 +183,9 @@ def pdf_to_word(input_pdf_path, output_word_path):
     # Verifica si el trabajo fue exitoso
     if job['status'] == 'finished':
         # Obtiene la URL de descarga del archivo Word convertido
-        export_task_id = job['tasks']['export-my-file']['id']
+        #print(job['tasks'][0]['id'])
+        #export_task_id = job['tasks']['export-my-file']['id']
+        export_task_id = job['tasks'][0]['id']
         export_task = cloudconvert.Task.find(id=export_task_id)
         export_url = export_task['result']['files'][0]['url']
 
