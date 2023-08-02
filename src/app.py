@@ -7,8 +7,6 @@ from components.form.form import form
 from components.doc_alert.doc_alert import alert
 import pathlib
 
-from back_functions.CargosAutoTest_Translate import pdf_to_word
-
 import base64
 import os
 from urllib.parse import quote as urlquote
@@ -52,6 +50,7 @@ borrar_downloads()
 server = Flask(__name__)
 app = dash.Dash(server=server, plugins=[dl.plugins.pages], external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
 server = app.server
+app.title="Worley JDT Bot"
 
 @server.route("/download/<path:path>")
 def download(path):
@@ -106,7 +105,8 @@ def translate_file(file_path,discipline,education,experience):
         print(name)
         translated_file.save(DOWNLOAD_DIRECTORY+'Translated-'+name[1])
 
-ALLOWED_EXTENSIONS = {'docx', 'pdf', 'txt'}
+#Definiendo un array con las extensiones de archivo permitidas
+ALLOWED_EXTENSIONS = {'docx'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -116,39 +116,7 @@ def save_file(name, content, discipline, education, experience):
     complete_path = os.path.join(UPLOAD_DIRECTORY, name)
     with open(complete_path, "wb") as fp:
         fp.write(base64.decodebytes(data))
-    if complete_path.lower().endswith(".pdf"):
-        docx_filename = complete_path.rsplit(".", 1)[0] + ".docx"
-        pdf_to_word(complete_path, docx_filename)  # Realiza la conversión de PDF a Word con CloudConvert
-        translate_file(docx_filename, discipline, education, experience)
-        # os.remove(docx_filename)  # Si deseas eliminar el archivo temporal de Word después de la traducción
-    else:
         translate_file(complete_path, discipline, education, experience)
-
-
-"""Funcion de conversion de pdf a word por medio de pdfPlumber"""
-# def pdf_to_word(input_pdf_path, output_word_path):
-#     doc = Document()
-
-#     with pdfplumber.open(input_pdf_path) as pdf:
-#         # Recorre las páginas del PDF
-#         for page in pdf.pages:
-#             # Extrae el texto de la página y agrega un párrafo al documento de Word
-#             text = page.extract_text()
-#             doc.add_paragraph(text)
-
-#             # Extrae las tablas de la página y agrega filas y celdas al documento de Word
-#             for table in page.extract_tables():
-#                 # Creamos una tabla en el documento
-#                 doc_table = doc.add_table(rows=len(table), cols=len(table[0]))
-
-#                 # Agregamos filas y celdas a la tabla
-#                 for i, row in enumerate(table):
-#                     for j, cell in enumerate(row):
-#                         # Verificamos si la celda es nula y la reemplazamos con una cadena vacía
-#                         cell_text = cell.strip() if cell else ""
-#                         doc_table.cell(i, j).text = cell_text
-
-#     doc.save(output_word_path)c
 
 def uploaded_files():
     """List the files in the download directory."""
@@ -224,9 +192,6 @@ def update_alert(contents, uploaded_filenames, is_open):
         return "File: " + name + " processed successfully!", True, None
 
     return "Upload a document to translate", False, None
-
-
-
 
 """Guardar el documento subido, traducirlo y generar un nuevo documento descargable"""
 

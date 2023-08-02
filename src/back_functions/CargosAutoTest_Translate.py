@@ -4,8 +4,6 @@ import numpy as np
 from docx import Document
 from deep_translator import GoogleTranslator
 import pathlib
-#import pdfplumber
-import cloudconvert
 import requests
 
 '''
@@ -18,14 +16,13 @@ El funcionamiento del algoritmo de traducción es el siguiente:
     6. Se retorna el documento en el nuevo formato con el nombre del archivo original
 '''
 
-
 # Cargando el documento que funcionara como plantilla
 plantilla = Document('plantillas/Plantilla.docx')  #Tiene que hacer esto con cada nuevo documento
 
 #Iniciando variable para usar traductor de google
 translator = GoogleTranslator(source="english",target="es")
 
-#Función para cambiar texto por fuera de las tablas del documento original al nuevo formato 
+#Función para cambiar texto por fuera de las tablas del documento original al nuevo formato
 def cambiaTexto(llaveOriginal,textoNuevo,doc):
     for paragraph in doc.paragraphs:
         if llaveOriginal in paragraph.text:
@@ -151,13 +148,7 @@ def procesar_doc(path,disciplina='Engineering',educacion='1',experiencia='3'):
     return plantilla
     #plantilla.save('downloads_files/'+path)
 
-"""Implementacion Cloud Convert"""
 
-API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiODNjODVhZjM5NjBmZGVmYzE2MWQwNDdkMjAxNmRkNjc3MGUxYTIwMDIzMjcwNWM5MTI1ODhiYjBlMmQ4ZTQ4M2EzYWM4MjVjOTg3MzI1YWUiLCJpYXQiOjE2OTA4NjMyNjYuMjkyOTkyLCJuYmYiOjE2OTA4NjMyNjYuMjkyOTkzLCJleHAiOjQ4NDY1MzY4NjYuMjg2NTE1LCJzdWIiOiI2NDU4NDAxMSIsInNjb3BlcyI6WyJ1c2VyLnJlYWQiLCJ1c2VyLndyaXRlIiwidGFzay5yZWFkIiwidGFzay53cml0ZSIsIndlYmhvb2sucmVhZCIsIndlYmhvb2sud3JpdGUiLCJwcmVzZXQucmVhZCIsInByZXNldC53cml0ZSJdfQ.JtTpWz8vuGpRa3U1K2chmK4Y4tsQo3H42SHPF6gW-lJkO5iT_4IQW_ghC5usdjL4Y-NnBw4o_PL3zG_IF1tQtLzQid2llQ0D9wdSFP4nNMR9rzAczMo1JzzZajSPs1t_dAE0V7HesRC5oDBMF1J2v2LU1l79tbxDVY14wKcDOYmht6pnaj-NqK4RjPCwwJ2lK5NEp9h2oT2PKHz7-otxeJWJjk1oGqqRAxF5hGKO_lP51R-SqmCzEI7kJ3u5LOCaJp52PLWk4OdyBO2RgOaQgIyz1JM0CgF7KC9ORnphBYQuloyJGTIb6vZVfjSJBf0oBzN-X8VTivgY9fszgFyhmzgNshys47whuN40Ff-eyRDGz6le2RJkMEiGvjc6UZpVSAgjFZIP8we2PrZ0MhviBFzUYhMJ3WPGkmm-BlCpyrshyg605T7KtvB0zPe1WZtRO6npDo4f7XMjHa0AYfwDAhX7wUA4zJ48D_XuWJZsuQ7LZWQCmtXYTvJhsjRZPwtE0OQl91i01wE7YO2xk6UYDXdo1RN3O6JIENYpmQld2LMVlpjbBG1UTvPvQV9CX8JUI5CHCQKaODDqa1GWAcKdNzKSvcFqIzde3oAD6MxKPKbRnh9PrsUePMHuY26Zr9pVJNZL9RBhnRccTlJFtXgUSLlv9ZFeoIYPIOpUpkXtAG4"
-#API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzNiOTZkYzg5OTE2ZjhhZDM3MTJhMmUxOGEzYzhlMzgxYjBiZGIxNjM5MGJkYTc5OWE3MjIzMGVkYzYwNGY0ZTgzN2I1YTRkNWM3YmYyMTkiLCJpYXQiOjE2OTA4MzQ1NDYuMjAxODA4LCJuYmYiOjE2OTA4MzQ1NDYuMjAxODEsImV4cCI6NDg0NjUwODE0Ni4xOTQwMzcsInN1YiI6IjY0NTUzODE3Iiwic2NvcGVzIjpbIndlYmhvb2sud3JpdGUiLCJ3ZWJob29rLnJlYWQiLCJ0YXNrLndyaXRlIiwidGFzay5yZWFkIiwidXNlci53cml0ZSIsInVzZXIucmVhZCIsInByZXNldC5yZWFkIiwicHJlc2V0LndyaXRlIl19.MN_kyRQn21KIbZ0W0DGqB6J_m1Rri2P5oD-uZeaXue-TGLNbByYBiik9yissmZwv_fuw1NuA68TtMZqZM-dbwVz5pdLrmDkTK5iX50kijt3C5Y2QAj5GH6MlDGkqJAaZ0bCNO_8sEATBwHbQDuhVAL01f1EC3ei6_wq_EgxF8CLlQxbtY5WhwLUjJLF50YKVW6BaakPT2jbd7RVLpX1CTT2mftLtK7KUn5chgJySjDygNCn9QKsCBmpHVZg5jK7gZRCYElHg6O3Ad_OM7Aq_vPkw4JS3aqqY4wvw427jaXd13dWW4FonwZZhZgACdCLewQPNbWtUgNnYdd9KvFFnnPPCX_f9q1VP80IRpqrk8bWihczv9aBFZFxwt8lRHV9zVubKR5xKUCieC63e8KD5ivsiym9UIYSzJGrCltMwYN9A80FJU2fi2Jt66amhOG_0F5L43L91lh_xoRp8aDYDZ7tTDIUEuc--zg531TuKCD3tZKNJ0YWq4HsSMqUt_Nu9NrQPyYaL951RPEQ7e5pRc8ziKQwKyI6k2iFnlm7bpXwUfZ4fpdfH17gTa-fFzpXyKDPoQDrJgB1sk2gMkSbis7cgFmav2NyZKuEkGyGvKrD5ejChn4qbdrlmOKq-_wcRfClBUSTt-ZX6ULjLeNyrxDIbjKb_9TC9lY62zhSVEiI"
-cloudconvert.configure(api_key=API_KEY)
-
-def pdf_to_word(input_pdf_path, output_word_path):
     # Crea el trabajo para importar el archivo PDF y convertirlo a Word
     job = cloudconvert.Job.create(payload={
         "tasks": {
