@@ -38,6 +38,8 @@ for f in delete_files_pdf:
 
 def borrar_downloads():
     delete_downloads = glob.glob(DOWNLOAD_DIRECTORY+'*.docx')
+    delete_files = glob.glob(UPLOAD_DIRECTORY+'*.docx')
+    delete_files_pdf = glob.glob(UPLOAD_DIRECTORY+'*.pdf')
     delete_py = glob.glob(DOWNLOAD_DIRECTORY+'*.py')    
     print("Borrando descargas")
     for f in delete_downloads:
@@ -45,7 +47,10 @@ def borrar_downloads():
         print("Descarga borrada")
     for f in delete_py:
         os.remove(f)    
-
+    for f in delete_files:
+        os.remove(f)
+    for f in delete_files_pdf:
+        os.remove(f)
 borrar_downloads()
 
 # Declarando la instancia de dash 
