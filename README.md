@@ -1,7 +1,7 @@
-### Project of Bot Traductor of Documents   
->  This project is completely open source. So you can use it wherever you want
+### Project of Bot Traductor of Documents 🤖
+>  This project no is Open Source, any attempt of use, will be legally validated.
 
-![Preview](https://user-images.githubusercontent.com/52077360/154740927-5d162085-ace4-42d8-9d3f-c20f97685a86.png)
+![Preview](https://i.imgur.com/dX5MDvB.png)
 
 <p align="center">
   <p align="center">☆*: .｡. o(≧▽≦)o .｡.:*☆<br/>
