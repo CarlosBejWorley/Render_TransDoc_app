@@ -1,5 +1,5 @@
-### Project of Bot Traductor of Documents 🤖
->  This project no is Open Source, any attempt of use, will be legally validated.
+### Worley: Job description translator Project 🤖
+>  This project is not Open Source, any attempt of use, will be legally validated.
 
 ![Preview](https://i.imgur.com/YfCw6XR.png)
 
