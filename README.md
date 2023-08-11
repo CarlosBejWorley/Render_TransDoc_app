@@ -27,6 +27,8 @@ Then, run the development server:
 
 #In Bash Distributions Based in Debian
 sudo apt install gunicorn
+```
+```bash
 
 #In Windows with python console
 pip3 install gunicorn
