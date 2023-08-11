@@ -34,9 +34,14 @@ pip3 install gunicorn
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000/) with your browser to see the result.
 
+This for local deploy
+
 #
 
 ### ↑↑↑ Deploying ↑↑↑
 
+This deploying mount in render
+
+With branch develop in [https://bot-traductor-worley.onrender.com/](https://bot-traductor-worley.onrender.com/) in your browser
 
 #
