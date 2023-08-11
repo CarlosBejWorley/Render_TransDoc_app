@@ -6,9 +6,9 @@ from components.navbar.navbar import navbar
 from components.form.form import form
 from components.doc_alert.doc_alert import alert
 import pathlib
-#from back_functions.CargosAutoTest_Translate import api_keys
+from back_functions.CargosAutoTest_Translate import api_keys
 
-#from back_functions.CargosAutoTest_Translate import pdf_to_word
+from back_functions.CargosAutoTest_Translate import pdf_to_word
 
 import base64
 import os
@@ -122,23 +122,7 @@ ALLOWED_EXTENSIONS = {'docx', 'pdf', 'txt'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-api_keys = [
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiODNjODVhZjM5NjBmZGVmYzE2MWQwNDdkMjAxNmRkNjc3MGUxYTIwMDIzMjcwNWM5MTI1ODhiYjBlMmQ4ZTQ4M2EzYWM4MjVjOTg3MzI1YWUiLCJpYXQiOjE2OTA4NjMyNjYuMjkyOTkyLCJuYmYiOjE2OTA4NjMyNjYuMjkyOTkzLCJleHAiOjQ4NDY1MzY4NjYuMjg2NTE1LCJzdWIiOiI2NDU4NDAxMSIsInNjb3BlcyI6WyJ1c2VyLnJlYWQiLCJ1c2VyLndyaXRlIiwidGFzay5yZWFkIiwidGFzay53cml0ZSIsIndlYmhvb2sucmVhZCIsIndlYmhvb2sud3JpdGUiLCJwcmVzZXQucmVhZCIsInByZXNldC53cml0ZSJdfQ.JtTpWz8vuGpRa3U1K2chmK4Y4tsQo3H42SHPF6gW-lJkO5iT_4IQW_ghC5usdjL4Y-NnBw4o_PL3zG_IF1tQtLzQid2llQ0D9wdSFP4nNMR9rzAczMo1JzzZajSPs1t_dAE0V7HesRC5oDBMF1J2v2LU1l79tbxDVY14wKcDOYmht6pnaj-NqK4RjPCwwJ2lK5NEp9h2oT2PKHz7-otxeJWJjk1oGqqRAxF5hGKO_lP51R-SqmCzEI7kJ3u5LOCaJp52PLWk4OdyBO2RgOaQgIyz1JM0CgF7KC9ORnphBYQuloyJGTIb6vZVfjSJBf0oBzN-X8VTivgY9fszgFyhmzgNshys47whuN40Ff-eyRDGz6le2RJkMEiGvjc6UZpVSAgjFZIP8we2PrZ0MhviBFzUYhMJ3WPGkmm-BlCpyrshyg605T7KtvB0zPe1WZtRO6npDo4f7XMjHa0AYfwDAhX7wUA4zJ48D_XuWJZsuQ7LZWQCmtXYTvJhsjRZPwtE0OQl91i01wE7YO2xk6UYDXdo1RN3O6JIENYpmQld2LMVlpjbBG1UTvPvQV9CX8JUI5CHCQKaODDqa1GWAcKdNzKSvcFqIzde3oAD6MxKPKbRnh9PrsUePMHuY26Zr9pVJNZL9RBhnRccTlJFtXgUSLlv9ZFeoIYPIOpUpkXtAG4",
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzNiOTZkYzg5OTE2ZjhhZDM3MTJhMmUxOGEzYzhlMzgxYjBiZGIxNjM5MGJkYTc5OWE3MjIzMGVkYzYwNGY0ZTgzN2I1YTRkNWM3YmYyMTkiLCJpYXQiOjE2OTA4MzQ1NDYuMjAxODA4LCJuYmYiOjE2OTA4MzQ1NDYuMjAxODEsImV4cCI6NDg0NjUwODE0Ni4xOTQwMzcsInN1YiI6IjY0NTUzODE3Iiwic2NvcGVzIjpbIndlYmhvb2sud3JpdGUiLCJ3ZWJob29rLnJlYWQiLCJ0YXNrLndyaXRlIiwidGFzay5yZWFkIiwidXNlci53cml0ZSIsInVzZXIucmVhZCIsInByZXNldC5yZWFkIiwicHJlc2V0LndyaXRlIl19.MN_kyRQn21KIbZ0W0DGqB6J_m1Rri2P5oD-uZeaXue-TGLNbByYBiik9yissmZwv_fuw1NuA68TtMZqZM-dbwVz5pdLrmDkTK5iX50kijt3C5Y2QAj5GH6MlDGkqJAaZ0bCNO_8sEATBwHbQDuhVAL01f1EC3ei6_wq_EgxF8CLlQxbtY5WhwLUjJLF50YKVW6BaakPT2jbd7RVLpX1CTT2mftLtK7KUn5chgJySjDygNCn9QKsCBmpHVZg5jK7gZRCYElHg6O3Ad_OM7Aq_vPkw4JS3aqqY4wvw427jaXd13dWW4FonwZZhZgACdCLewQPNbWtUgNnYdd9KvFFnnPPCX_f9q1VP80IRpqrk8bWihczv9aBFZFxwt8lRHV9zVubKR5xKUCieC63e8KD5ivsiym9UIYSzJGrCltMwYN9A80FJU2fi2Jt66amhOG_0F5L43L91lh_xoRp8aDYDZ7tTDIUEuc--zg531TuKCD3tZKNJ0YWq4HsSMqUt_Nu9NrQPyYaL951RPEQ7e5pRc8ziKQwKyI6k2iFnlm7bpXwUfZ4fpdfH17gTa-fFzpXyKDPoQDrJgB1sk2gMkSbis7cgFmav2NyZKuEkGyGvKrD5ejChn4qbdrlmOKq-_wcRfClBUSTt-ZX6ULjLeNyrxDIbjKb_9TC9lY62zhSVEiI",
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiOWEwZDFiYTlmYzc3MDdjMThkYTVlNWQwODM3ZGM5OTYzZDU5YTE1NzBiYzI1NDk2MmMwMWQzOTY1MzM5MjIwMTYwNTBhNWNkZWQ0MDgwZTEiLCJpYXQiOjE2OTE2NzY0MzkuMTkyNDY2LCJuYmYiOjE2OTE2NzY0MzkuMTkyNDY4LCJleHAiOjQ4NDczNTAwMzkuMTg3MDMxLCJzdWIiOiI2NDU4OTYyOCIsInNjb3BlcyI6WyJ1c2VyLnJlYWQiLCJ1c2VyLndyaXRlIiwidGFzay5yZWFkIiwidGFzay53cml0ZSIsIndlYmhvb2sucmVhZCIsIndlYmhvb2sud3JpdGUiLCJwcmVzZXQucmVhZCIsInByZXNldC53cml0ZSJdfQ.qsEXfOxZtq5tfqKOShLhc9JGQRhXfA9MWK6ahFV1WpZaTjSq4WICdg89-xBFasDOKJtVuhfgfvzfH8O0HjLYacyg4ky7qhnSzVlHLaZU887Dj_-T96m8uagTZssM-BK2eVS4jvUcJdtB0YrYiVbOSV6N3ZIkCagYF45_1ZxuHfi31DwB7jpDzkVWRtl3tvVHR3VUAdmIiP5PuHxcxSAmXiOoGdgFdNIuFrMVKjGwyEyqz2yWWniIj8jQECsqLC7LMksStgDTmTRSvxBfaFv_9jj0MKsajs3u2RfYkt9gKk0ufnXvjPjjwKFAxHgl0dZ_Zd2cjJhoH1fD5S7HfMEeDzAj-45_QMPJhQ9eHdDDwBfw3LFjBhaKeH1ylNN8X1hfNAWuN9JS13qOrtTqqLKI7cjxTLRTa9O0wVd98x6h5SCFifxUy54eRYiFYG6EKeXvFBA5TorrkrvvZd4fY9Z9VlPV00xzKfRm8fXDW1rSOMMCXQf5qGjnSRs9UVbhF9dZkZpYSi4rzIlP11tYsNlW1DaCO8PWbgp4Pq4IInHovoJRitEDO93lKhjELIX4zkWHlEe-JqKtPP-Kmr58TJhqcVWPUzz23HSZjYCKpmolE596mmItO8BrfdqGFYWtkyX-pcWIpJhIj91iN9iOjmHBXdXABPgCe4Ega8fr17Z08oM"
-]
 
-def hash_api_key(api_key, salt=None, iterations=100000):
-    if salt is None:
-        salt = os.urandom(16)  # Generates a random 16-byte salt
-
-    hashed_api_key = hashlib.pbkdf2_hmac('sha256', api_key.encode('utf-8'), salt, iterations)
-
-    return salt, iterations, hashed_api_key
-
-def deshash_api_key(api_key, salt, iterations):
-    hashed_api_key_to_verify = hashlib.pbkdf2_hmac('sha256', api_key.encode('utf-8'), salt, iterations)
-    return hashed_api_key_to_verify
 
 def save_file(name, content, discipline, education, experience):
     data = content.encode("utf8").split(b";base64,")[1]
@@ -152,73 +136,6 @@ def save_file(name, content, discipline, education, experience):
         os.remove(docx_filename)  # If you want to remove the temporary Word file after translation
     else:
         translate_file(complete_path, discipline, education, experience)
-
-"""Implementacion Cloud Convert"""
-
-#API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiODNjODVhZjM5NjBmZGVmYzE2MWQwNDdkMjAxNmRkNjc3MGUxYTIwMDIzMjcwNWM5MTI1ODhiYjBlMmQ4ZTQ4M2EzYWM4MjVjOTg3MzI1YWUiLCJpYXQiOjE2OTA4NjMyNjYuMjkyOTkyLCJuYmYiOjE2OTA4NjMyNjYuMjkyOTkzLCJleHAiOjQ4NDY1MzY4NjYuMjg2NTE1LCJzdWIiOiI2NDU4NDAxMSIsInNjb3BlcyI6WyJ1c2VyLnJlYWQiLCJ1c2VyLndyaXRlIiwidGFzay5yZWFkIiwidGFzay53cml0ZSIsIndlYmhvb2sucmVhZCIsIndlYmhvb2sud3JpdGUiLCJwcmVzZXQucmVhZCIsInByZXNldC53cml0ZSJdfQ.JtTpWz8vuGpRa3U1K2chmK4Y4tsQo3H42SHPF6gW-lJkO5iT_4IQW_ghC5usdjL4Y-NnBw4o_PL3zG_IF1tQtLzQid2llQ0D9wdSFP4nNMR9rzAczMo1JzzZajSPs1t_dAE0V7HesRC5oDBMF1J2v2LU1l79tbxDVY14wKcDOYmht6pnaj-NqK4RjPCwwJ2lK5NEp9h2oT2PKHz7-otxeJWJjk1oGqqRAxF5hGKO_lP51R-SqmCzEI7kJ3u5LOCaJp52PLWk4OdyBO2RgOaQgIyz1JM0CgF7KC9ORnphBYQuloyJGTIb6vZVfjSJBf0oBzN-X8VTivgY9fszgFyhmzgNshys47whuN40Ff-eyRDGz6le2RJkMEiGvjc6UZpVSAgjFZIP8we2PrZ0MhviBFzUYhMJ3WPGkmm-BlCpyrshyg605T7KtvB0zPe1WZtRO6npDo4f7XMjHa0AYfwDAhX7wUA4zJ48D_XuWJZsuQ7LZWQCmtXYTvJhsjRZPwtE0OQl91i01wE7YO2xk6UYDXdo1RN3O6JIENYpmQld2LMVlpjbBG1UTvPvQV9CX8JUI5CHCQKaODDqa1GWAcKdNzKSvcFqIzde3oAD6MxKPKbRnh9PrsUePMHuY26Zr9pVJNZL9RBhnRccTlJFtXgUSLlv9ZFeoIYPIOpUpkXtAG4"
-#API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzNiOTZkYzg5OTE2ZjhhZDM3MTJhMmUxOGEzYzhlMzgxYjBiZGIxNjM5MGJkYTc5OWE3MjIzMGVkYzYwNGY0ZTgzN2I1YTRkNWM3YmYyMTkiLCJpYXQiOjE2OTA4MzQ1NDYuMjAxODA4LCJuYmYiOjE2OTA4MzQ1NDYuMjAxODEsImV4cCI6NDg0NjUwODE0Ni4xOTQwMzcsInN1YiI6IjY0NTUzODE3Iiwic2NvcGVzIjpbIndlYmhvb2sud3JpdGUiLCJ3ZWJob29rLnJlYWQiLCJ0YXNrLndyaXRlIiwidGFzay5yZWFkIiwidXNlci53cml0ZSIsInVzZXIucmVhZCIsInByZXNldC5yZWFkIiwicHJlc2V0LndyaXRlIl19.MN_kyRQn21KIbZ0W0DGqB6J_m1Rri2P5oD-uZeaXue-TGLNbByYBiik9yissmZwv_fuw1NuA68TtMZqZM-dbwVz5pdLrmDkTK5iX50kijt3C5Y2QAj5GH6MlDGkqJAaZ0bCNO_8sEATBwHbQDuhVAL01f1EC3ei6_wq_EgxF8CLlQxbtY5WhwLUjJLF50YKVW6BaakPT2jbd7RVLpX1CTT2mftLtK7KUn5chgJySjDygNCn9QKsCBmpHVZg5jK7gZRCYElHg6O3Ad_OM7Aq_vPkw4JS3aqqY4wvw427jaXd13dWW4FonwZZhZgACdCLewQPNbWtUgNnYdd9KvFFnnPPCX_f9q1VP80IRpqrk8bWihczv9aBFZFxwt8lRHV9zVubKR5xKUCieC63e8KD5ivsiym9UIYSzJGrCltMwYN9A80FJU2fi2Jt66amhOG_0F5L43L91lh_xoRp8aDYDZ7tTDIUEuc--zg531TuKCD3tZKNJ0YWq4HsSMqUt_Nu9NrQPyYaL951RPEQ7e5pRc8ziKQwKyI6k2iFnlm7bpXwUfZ4fpdfH17gTa-fFzpXyKDPoQDrJgB1sk2gMkSbis7cgFmav2NyZKuEkGyGvKrD5ejChn4qbdrlmOKq-_wcRfClBUSTt-ZX6ULjLeNyrxDIbjKb_9TC9lY62zhSVEiI"
-
-def pdf_to_word(input_pdf_path, output_word_path, api_keys):
-    for api_key in api_keys:
-        try:
-
-            salt, iterations, hashed_api_key = hash_api_key(api_key)
-            stored_api_key_info = (hashed_api_key, salt, iterations)
-            print ("Hash" , stored_api_key_info)
-
-            api = deshash_api_key (*stored_api_key_info)
-            print ("Deshash", api_key)
-            #Configura la api key para ser usada en el cloudconvert
-            cloudconvert.configure(api_key= api)
-
-            #Crea un job en cloud convert por medio de un payload
-            job = cloudconvert.Job.create(payload={
-                "tasks": {
-                    "import-my-file": {
-                        "operation": "import/upload"
-                    },
-                    "convert-my-file": {
-                        "operation": "convert",
-                        "input": "import-my-file",
-                        "output_format": "docx"
-                    },
-                    "export-my-file": {
-                        "operation": "export/url",
-                        "input": "convert-my-file"
-                    }
-                }
-            })
-
-            import_task = cloudconvert.Task.upload(file_name=input_pdf_path, task=job['tasks'][0])
-            job = cloudconvert.Job.wait(id=job['id'])
-            
-            #Espera a que el estatus del job sea finalizado para proceder con la descarga del archivo convertido
-            if job['status'] == 'finished':
-                export_task_id = job['tasks'][0]['id']
-                export_task = cloudconvert.Task.find(id=export_task_id)
-                export_url = export_task['result']['files'][0]['url']
-                response = requests.get(export_url)
-
-                if response.status_code == 200:
-                    with open(output_word_path, 'wb') as output_file:
-                        output_file.write(response.content)
-                    print("PDF converted to Word successfully!")
-                    return True
-                else:
-                    print("Error downloading the converted file.")
-            elif job['status'] == 'error' and job['error']['code'] == 'CREDITS_EXCEEDED':
-                print(f"API Key {api_key} has run out of conversion credits.")
-                continue  # Intenta con la siguiente api key registrada
-            else:
-                print(f"Conversion failed with API Key {api_key}.")
-        except cloudconvert.exceptions.ClientError as e:
-            print(f"Error with API Key {api_key}: {e}")
-    print("Conversion failed with all API keys.")
-    return False
-
-
-    
-
 
 """Funcion de conversion de pdf a word por medio de pdfPlumber"""
 # def pdf_to_word(input_pdf_path, output_word_path):
